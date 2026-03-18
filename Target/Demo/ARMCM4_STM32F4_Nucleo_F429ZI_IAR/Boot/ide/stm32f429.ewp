@@ -277,7 +277,7 @@
                 </option>
                 <option>
                     <name>CCDiagSuppress</name>
-                    <state></state>
+                    <state>Pa082</state>
                 </option>
                 <option>
                     <name>CCDiagRemark</name>
@@ -364,12 +364,13 @@
                     <state>$PROJ_DIR$\..\lib\CMSIS\Device\ST\STM32F4xx\Include</state>
                     <state>$PROJ_DIR$\..\lib\STM32F4xx_HAL_Driver\Inc</state>
                     <state>$PROJ_DIR$\..\lib\STM32F4xx_HAL_Driver\Inc\Legacy</state>
-                    <state>$PROJ_DIR$\..\lib\STM32_USB_Device_Library\Core\Inc</state>
+                    <state>$PROJ_DIR$\..\lib\TinyUSB</state>
                     <state>$PROJ_DIR$\..\lib\uip</state>
                     <state>$PROJ_DIR$\..\..\..\..\Source</state>
                     <state>$PROJ_DIR$\..\..\..\..\Source\ARMCM4_STM32F4</state>
                     <state>$PROJ_DIR$\..\..\..\..\Source\third_party\uip\uip</state>
                     <state>$PROJ_DIR$\..\..\..\..\Source\third_party\uip\apps\dhcpc</state>
+                    <state>$PROJ_DIR$\..\..\..\..\Source\third_party\tinyusb\src</state>
                 </option>
                 <option>
                     <name>CCStdIncCheck</name>
@@ -390,7 +391,7 @@
                 <option>
                     <name>CCOptStrategy</name>
                     <version>0</version>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>CCOptLevelSlave</name>
@@ -443,7 +444,7 @@
                 <option>
                     <name>CCOptStrategySlave</name>
                     <version>0</version>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>CCGuardCalls</name>
@@ -1334,6 +1335,15 @@
                 </file>
             </group>
             <group>
+                <name>TinyUSB</name>
+                <file>
+                    <name>$PROJ_DIR$\..\lib\TinyUSB\tusb_config.h</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\lib\TinyUSB\usb_descriptors.c</name>
+                </file>
+            </group>
+            <group>
                 <name>uip</name>
                 <file>
                     <name>$PROJ_DIR$\..\lib\uip\clock-arch.c</name>
@@ -1355,30 +1365,6 @@
                 </file>
                 <file>
                     <name>$PROJ_DIR$\..\lib\uip\uip-conf.h</name>
-                </file>
-            </group>
-            <group>
-                <name>USB_Device</name>
-                <file>
-                    <name>$PROJ_DIR$\..\lib\STM32_USB_Device_Library\Core\Src\usbd_core.c</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\lib\STM32_USB_Device_Library\Core\Inc\usbd_core.h</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\lib\STM32_USB_Device_Library\Core\Src\usbd_ctlreq.c</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\lib\STM32_USB_Device_Library\Core\Inc\usbd_ctlreq.h</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\lib\STM32_USB_Device_Library\Core\Inc\usbd_def.h</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\lib\STM32_USB_Device_Library\Core\Src\usbd_ioreq.c</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\lib\STM32_USB_Device_Library\Core\Inc\usbd_ioreq.h</name>
                 </file>
             </group>
             <file>
@@ -1411,24 +1397,6 @@
         </file>
         <file>
             <name>$PROJ_DIR$\..\startup_stm32f429xx.s</name>
-        </file>
-        <file>
-            <name>$PROJ_DIR$\..\usbd_bulk.c</name>
-        </file>
-        <file>
-            <name>$PROJ_DIR$\..\usbd_bulk.h</name>
-        </file>
-        <file>
-            <name>$PROJ_DIR$\..\usbd_conf.c</name>
-        </file>
-        <file>
-            <name>$PROJ_DIR$\..\usbd_conf.h</name>
-        </file>
-        <file>
-            <name>$PROJ_DIR$\..\usbd_desc.c</name>
-        </file>
-        <file>
-            <name>$PROJ_DIR$\..\usbd_desc.h</name>
         </file>
     </group>
     <group>
@@ -1474,6 +1442,90 @@
         </group>
         <group>
             <name>third_party</name>
+            <group>
+                <name>tinyusb</name>
+                <file>
+                    <name>$PROJ_DIR$\..\..\..\..\Source\third_party\tinyusb\src\device\dcd.h</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\..\..\Source\third_party\tinyusb\src\portable\synopsys\dwc2\dcd_dwc2.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\..\..\Source\third_party\tinyusb\src\portable\synopsys\dwc2\dwc2_common.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\..\..\Source\third_party\tinyusb\src\portable\synopsys\dwc2\dwc2_common.h</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\..\..\Source\third_party\tinyusb\src\portable\synopsys\dwc2\dwc2_stm32.h</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\..\..\Source\third_party\tinyusb\src\portable\synopsys\dwc2\dwc2_type.h</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\..\..\Source\third_party\tinyusb\src\osal\osal.h</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\..\..\Source\third_party\tinyusb\src\osal\osal_none.h</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\..\..\Source\third_party\tinyusb\src\tusb.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\..\..\Source\third_party\tinyusb\src\tusb.h</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\..\..\Source\third_party\tinyusb\src\common\tusb_common.h</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\..\..\Source\third_party\tinyusb\src\common\tusb_compiler.h</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\..\..\Source\third_party\tinyusb\src\common\tusb_debug.h</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\..\..\Source\third_party\tinyusb\src\common\tusb_fifo.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\..\..\Source\third_party\tinyusb\src\common\tusb_fifo.h</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\..\..\Source\third_party\tinyusb\src\common\tusb_mcu.h</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\..\..\Source\third_party\tinyusb\src\tusb_option.h</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\..\..\Source\third_party\tinyusb\src\common\tusb_private.h</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\..\..\Source\third_party\tinyusb\src\common\tusb_types.h</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\..\..\Source\third_party\tinyusb\src\common\tusb_verify.h</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\..\..\Source\third_party\tinyusb\src\portable\usb_board.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\..\..\Source\third_party\tinyusb\src\device\usbd.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\..\..\Source\third_party\tinyusb\src\device\usbd.h</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\..\..\Source\third_party\tinyusb\src\device\usbd_control.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\..\..\Source\third_party\tinyusb\src\device\usbd_pvt.h</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\..\..\Source\third_party\tinyusb\src\class\vendor\vendor_device.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\..\..\Source\third_party\tinyusb\src\class\vendor\vendor_device.h</name>
+                </file>
+            </group>
             <group>
                 <name>uip</name>
                 <file>
