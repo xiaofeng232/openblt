@@ -774,6 +774,11 @@
               <FileType>2</FileType>
               <FilePath>..\startup_stm32f303xc.s</FilePath>
             </File>
+            <File>
+              <FileName>com_custom.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\com_custom.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -980,16 +985,6 @@
               <FilePath>..\..\..\..\Source\third_party\tinyusb\src\tusb_option.h</FilePath>
             </File>
             <File>
-              <FileName>vendor_device.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\Source\third_party\tinyusb\src\class\vendor\vendor_device.c</FilePath>
-            </File>
-            <File>
-              <FileName>vendor_device.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\..\..\Source\third_party\tinyusb\src\class\vendor\vendor_device.h</FilePath>
-            </File>
-            <File>
               <FileName>tusb_common.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\..\..\Source\third_party\tinyusb\src\common\tusb_common.h</FilePath>
@@ -1088,6 +1083,21 @@
               <FileName>fsdev_type.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\..\..\Source\third_party\tinyusb\src\portable\st\stm32_fsdev\fsdev_type.h</FilePath>
+            </File>
+            <File>
+              <FileName>cdc.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\Source\third_party\tinyusb\src\class\cdc\cdc.h</FilePath>
+            </File>
+            <File>
+              <FileName>cdc_device.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Source\third_party\tinyusb\src\class\cdc\cdc_device.c</FilePath>
+            </File>
+            <File>
+              <FileName>cdc_device.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\Source\third_party\tinyusb\src\class\cdc\cdc_device.h</FilePath>
             </File>
           </Files>
         </Group>

@@ -56,27 +56,23 @@
 /****************************************************************************************
 *   C O M M U N I C A T I O N   I N T E R F A C E   C O N F I G U R A T I O N
 ****************************************************************************************/
-/* The USB communication interface is selected by setting the BOOT_COM_USB_ENABLE
- * configurable to 1.
- *
+/* The custom communication interface is selected by setting the BOOT_COM_CUSTOM_ENABLE
+ * configurable to 1. This enables you to perform firmware updates using a new
+ * communication interface. As long as you can find a way to embed an XCP packet in
+ * your communication packet, you can use whatever communication interface your prefer.
+ * Configurable BOOT_COM_CUSTOM_TX_MAX_DATA sets the maximum XCP packet size that the
+ * transport layer can transmit. BOOT_COM_CUSTOM_RX_MAX_DATA sets the maximum XCP packet
+ * size that the transport layer can receive. After enabling this custom communication
+ * interface, you can implement the actual communication functionality in the hook-
+ * functions: ComCustomInitHook(), ComCustomFreeHook(), ComCustomReceivePacketHook(),
+ * and ComCustomTransmitPacketHook().
  */
-/** \brief Enable/disable USB transport layer. */
-#define BOOT_COM_USB_ENABLE             (1)
-
-
-/* The RS232 communication interface is selected by setting the BOOT_COM_RS232_ENABLE
- * configurable to 1. Configurable BOOT_COM_RS232_BAUDRATE selects the communication
- * speed in bits/second. It is common for a microcontroller to have more than 1 UART
- * interface on board. The zero-based BOOT_COM_RS232_CHANNEL_INDEX selects the UART
- * interface.
- *
- */
-/** \brief Enable/disable UART transport layer. */
-#define BOOT_COM_RS232_ENABLE            (0)
-/** \brief Configure the desired communication speed. */
-#define BOOT_COM_RS232_BAUDRATE          (57600)
-/** \brief Select the desired UART peripheral as a zero based index. */
-#define BOOT_COM_RS232_CHANNEL_INDEX     (1)
+/** \brief Enable/disable custom transport layer. */
+#define BOOT_COM_CUSTOM_ENABLE           (1)
+/** \brief Set the maximum XCP packet size that the transport layer can transmit. */
+#define BOOT_COM_CUSTOM_TX_MAX_DATA      (63)
+/** \brief Set the maximum XCP packet size that the transport layer can receive. */
+#define BOOT_COM_CUSTOM_RX_MAX_DATA      (63)
 
 
 /****************************************************************************************

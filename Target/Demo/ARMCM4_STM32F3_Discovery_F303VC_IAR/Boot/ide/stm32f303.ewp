@@ -1331,6 +1331,9 @@
             <name>$PROJ_DIR$\..\blt_conf.h</name>
         </file>
         <file>
+            <name>$PROJ_DIR$\..\com_custom.c</name>
+        </file>
+        <file>
             <name>$PROJ_DIR$\..\flash_layout.c</name>
             <excluded>
                 <configuration>stm32f303</configuration>
@@ -1397,6 +1400,15 @@
             <name>third_party</name>
             <group>
                 <name>tinyusb</name>
+                <file>
+                    <name>$PROJ_DIR$\..\..\..\..\Source\third_party\tinyusb\src\class\cdc\cdc.h</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\..\..\Source\third_party\tinyusb\src\class\cdc\cdc_device.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\..\..\Source\third_party\tinyusb\src\class\cdc\cdc_device.h</name>
+                </file>
                 <file>
                     <name>$PROJ_DIR$\..\..\..\..\Source\third_party\tinyusb\src\device\dcd.h</name>
                 </file>
@@ -1465,12 +1477,6 @@
                 </file>
                 <file>
                     <name>$PROJ_DIR$\..\..\..\..\Source\third_party\tinyusb\src\device\usbd_pvt.h</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\..\..\..\Source\third_party\tinyusb\src\class\vendor\vendor_device.c</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\..\..\..\Source\third_party\tinyusb\src\class\vendor\vendor_device.h</name>
                 </file>
             </group>
         </group>

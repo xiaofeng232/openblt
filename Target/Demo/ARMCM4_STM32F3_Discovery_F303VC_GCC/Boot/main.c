@@ -133,7 +133,7 @@ static void SystemClock_Config(void)
     ;
   }
 
-#if (BOOT_COM_USB_ENABLE > 0)
+#if (BOOT_COM_CUSTOM_ENABLE > 0)
   LL_RCC_SetUSBClockSource(LL_RCC_USB_CLKSOURCE_PLL_DIV_1_5);
 #endif
   /* Update the system clock speed setting. */
@@ -160,7 +160,7 @@ void HAL_MspInit(void)
   LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOA);
   LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOE);
 
-#if (BOOT_COM_USB_ENABLE > 0)
+#if (BOOT_COM_CUSTOM_ENABLE > 0)
   /* USB clock enable. */
   LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_USB);
 #endif
@@ -180,7 +180,7 @@ void HAL_MspInit(void)
   GPIO_InitStruct.Pull = LL_GPIO_PULL_DOWN;
   LL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
-#if (BOOT_COM_USB_ENABLE > 0)
+#if (BOOT_COM_CUSTOM_ENABLE > 0)
   /* USB D+ and USB D- pin configuration. */
   GPIO_InitStruct.Pin = LL_GPIO_PIN_11 | LL_GPIO_PIN_12;
   GPIO_InitStruct.Mode = LL_GPIO_MODE_ALTERNATE;
@@ -202,6 +202,7 @@ void HAL_MspInit(void)
 ****************************************************************************************/
 void HAL_MspDeInit(void)
 {
+#if (BOOT_COM_CUSTOM_ENABLE > 0)
   LL_GPIO_InitTypeDef GPIO_InitStruct = {0};
 
   /* The STM32F3-Discovery board has a pull-up on the USB_DP line, which is always
@@ -223,6 +224,7 @@ void HAL_MspDeInit(void)
   GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
   GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
   LL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+#endif
 
   /* Reset the RCC clock configuration to the default reset state. */
   LL_RCC_DeInit();
@@ -233,7 +235,7 @@ void HAL_MspDeInit(void)
   /* Deinit used GPIOs, except GPIOA to make sure USB D+ (PA12) stays low. */
   LL_GPIO_DeInit(GPIOE);
 
-#if (BOOT_COM_USB_ENABLE > 0)
+#if (BOOT_COM_CUSTOM_ENABLE > 0)
   /* USB clock disable. */
   LL_APB1_GRP1_DisableClock(LL_APB1_GRP1_PERIPH_USB);
 #endif

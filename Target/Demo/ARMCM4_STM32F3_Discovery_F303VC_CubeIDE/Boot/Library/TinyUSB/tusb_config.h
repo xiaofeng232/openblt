@@ -71,11 +71,6 @@
 // require tud_int_handler() to be called continuously in the program's infinite loop.
 #define CFG_TUSB_POLLING_ENABLED  1
 
-// Enable/disable the loading of the WinUSB GUID through MS OS 2.0 descriptors. This
-// makes it possible to automatically install WinUSB devices without having to provide
-// a device specific INF file.
-#define CFG_TUD_WINUSB_ENABLED     1
-
 /* USB DMA on some MCUs can only access a specific SRAM region with restriction on alignment.
  * Tinyusb use follows macros to declare transferring memory so that they can be put
  * into those specific section.
@@ -88,7 +83,7 @@
 #endif
 
 #ifndef CFG_TUSB_MEM_ALIGN
-#define CFG_TUSB_MEM_ALIGN        __attribute__ ((aligned(4)))
+#define CFG_TUSB_MEM_ALIGN          __attribute__ ((aligned(4)))
 #endif
 
 //--------------------------------------------------------------------
@@ -100,16 +95,21 @@
 #endif
 
 //------------- CLASS -------------//
-#define CFG_TUD_CDC               0
+#define CFG_TUD_CDC               1
 #define CFG_TUD_MSC               0
 #define CFG_TUD_HID               0
 #define CFG_TUD_MIDI              0
-#define CFG_TUD_VENDOR            1
+#define CFG_TUD_VENDOR            0
 
-// Vendor FIFO size of TX and RX
-// If not configured vendor endpoints will not be buffered
-#define CFG_TUD_VENDOR_RX_BUFSIZE (64)
-#define CFG_TUD_VENDOR_TX_BUFSIZE (64)
+#define CFG_TUD_CDC_NOTIFY        1 // Enable use of notification endpoint
+
+// CDC FIFO size of TX and RX
+#define CFG_TUD_CDC_RX_BUFSIZE   (64)
+#define CFG_TUD_CDC_TX_BUFSIZE   (64)
+
+// CDC Endpoint transfer buffer size, more is faster
+#define CFG_TUD_CDC_EP_BUFSIZE   (64)
+
 #ifdef __cplusplus
  }
 #endif

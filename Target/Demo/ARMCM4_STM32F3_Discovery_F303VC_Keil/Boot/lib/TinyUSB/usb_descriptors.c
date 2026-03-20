@@ -26,14 +26,12 @@
 #include "tusb.h"
 #include "stm32f3xx.h"
 
-
-#define USB_VID   0x1D50  // OpenMoko
-#define USB_PID   0x60AC  // OpenBLT Bootloader
-#if (CFG_TUD_WINUSB_ENABLED == 1)
-#define USB_BCD   0x0201  // Needs to be >= 2.01 for BOS
-#else
+// These USB VID and PID values are free to use, as long as they meet the requirements
+// as outlined here:
+//   https://github.com/obdev/v-usb/blob/master/usbdrv/USB-IDs-for-free.txt
+#define USB_VID   0x16C0  // Van Ooijen Technische Informatica
+#define USB_PID   0x05e1  // Free shared USB VID/PID pair for CDC devices
 #define USB_BCD   0x0200
-#endif
 
 //--------------------------------------------------------------------+
 // Unique ID string
@@ -103,10 +101,12 @@ tusb_desc_device_t const desc_device =
   .bLength            = sizeof(tusb_desc_device_t),
   .bDescriptorType    = TUSB_DESC_DEVICE,
   .bcdUSB             = USB_BCD,
-  .bDeviceClass       = 0x00,
-  .bDeviceSubClass    = 0x00,
-  .bDeviceProtocol    = 0x00,
 
+  // Use Interface Association Descriptor (IAD) for CDC
+  // As required by USB Specs IAD's subclass must be common class (2) and protocol must be IAD (1)
+  .bDeviceClass       = TUSB_CLASS_MISC,
+  .bDeviceSubClass    = MISC_SUBCLASS_COMMON,
+  .bDeviceProtocol    = MISC_PROTOCOL_IAD,
   .bMaxPacketSize0    = CFG_TUD_ENDPOINT0_SIZE,
 
   .idVendor           = USB_VID,
@@ -130,25 +130,27 @@ uint8_t const * tud_descriptor_device_cb(void)
 //--------------------------------------------------------------------+
 // Configuration Descriptor
 //--------------------------------------------------------------------+
-
-enum
-{
-  ITF_NUM_VENDOR,
+enum {
+  ITF_NUM_CDC_0 = 0,
+  ITF_NUM_CDC_0_DATA,
   ITF_NUM_TOTAL
 };
 
-#define CONFIG_TOTAL_LEN    (TUD_CONFIG_DESC_LEN + TUD_VENDOR_DESC_LEN)
+#define CONFIG_TOTAL_LEN    (TUD_CONFIG_DESC_LEN + CFG_TUD_CDC * TUD_CDC_DESC_LEN)
 
-#define EPNUM_VENDOR_OUT   0x01
-#define EPNUM_VENDOR_IN    0x81
+#define EPNUM_CDC_0_NOTIF   0x81
+#define EPNUM_CDC_0_OUT     0x02
+#define EPNUM_CDC_0_IN      0x82
 
-uint8_t const desc_fs_configuration[] =
+
+static uint8_t const desc_fs_configuration[] =
 {
   // Config number, interface count, string index, total length, attribute, power in mA
   TUD_CONFIG_DESCRIPTOR(1, ITF_NUM_TOTAL, 0, CONFIG_TOTAL_LEN, 0x00, 150),
 
-  // Interface number, string index, EP Out & EP In address, EP size
-  TUD_VENDOR_DESCRIPTOR(ITF_NUM_VENDOR, 0, EPNUM_VENDOR_OUT, EPNUM_VENDOR_IN, 64),
+  // 1st CDC: Interface number, string index, EP notification address and size, EP data address (out, in) and size.
+  TUD_CDC_DESCRIPTOR(ITF_NUM_CDC_0, 4, EPNUM_CDC_0_NOTIF, 16, EPNUM_CDC_0_OUT, EPNUM_CDC_0_IN, 64),
+
 };
 
 // Invoked when received GET CONFIGURATION DESCRIPTOR
@@ -161,117 +163,20 @@ uint8_t const * tud_descriptor_configuration_cb(uint8_t index)
   return desc_fs_configuration;
 }
 
-#if (CFG_TUD_WINUSB_ENABLED == 1)
-//--------------------------------------------------------------------+
-// BOS Descriptor
-//--------------------------------------------------------------------+
-
-/* Microsoft OS 2.0 registry property descriptor per MS requirements:
- *   https://msdn.microsoft.com/en-us/library/windows/hardware/hh450799(v=vs.85).aspx
- * device should create DeviceInterfaceGUID. It can be done by driver and
- * in case of real PnP solution device should expose MS "Microsoft OS 2.0
- * registry property descriptor". Such descriptor can insert any record
- * into Windows registry per device/configuration/interface. In our case it
- * will insert "DeviceInterfaceGUID" string property.
- */
-
-#define BOS_TOTAL_LEN             (TUD_BOS_DESC_LEN + TUD_BOS_MICROSOFT_OS_DESC_LEN)
-
-#define MS_OS_20_DESC_LEN         0x9E
-
-#define VENDOR_REQUEST_MICROSOFT  1
-
-// BOS Descriptor is required for MS OS 2.0.
-uint8_t const desc_bos[] =
-{
-  // total length, number of device caps
-  TUD_BOS_DESCRIPTOR(BOS_TOTAL_LEN, 1),
-
-  // Microsoft OS 2.0 descriptor
-  TUD_BOS_MS_OS_20_DESCRIPTOR(MS_OS_20_DESC_LEN, VENDOR_REQUEST_MICROSOFT)
-};
-
-uint8_t const * tud_descriptor_bos_cb(void)
-{
-  return desc_bos;
-}
-
-uint8_t const desc_ms_os_20[] =
-{
-  // Set header: length, type, windows version, total length
-  U16_TO_U8S_LE(0x000A), U16_TO_U8S_LE(MS_OS_20_SET_HEADER_DESCRIPTOR), U32_TO_U8S_LE(0x06030000), U16_TO_U8S_LE(MS_OS_20_DESC_LEN),
-
-  // MS OS 2.0 Compatible ID descriptor: length, type, compatible ID, sub compatible ID
-  U16_TO_U8S_LE(0x0014), U16_TO_U8S_LE(MS_OS_20_FEATURE_COMPATBLE_ID), 'W', 'I', 'N', 'U', 'S', 'B', 0x00, 0x00,
-  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // sub-compatible
-
-  // MS OS 2.0 Registry property descriptor: length, type
-  U16_TO_U8S_LE(MS_OS_20_DESC_LEN-0x0A-0x14), U16_TO_U8S_LE(MS_OS_20_FEATURE_REG_PROPERTY),
-  U16_TO_U8S_LE(0x0001), U16_TO_U8S_LE(0x0028), // wPropertyDataType, wPropertyNameLength and PropertyName "DeviceInterfaceGUID\0" in UTF-16
-  'D', 0x00, 'e', 0x00, 'v', 0x00, 'i', 0x00, 'c', 0x00, 'e', 0x00, 'I', 0x00, 'n', 0x00, 't', 0x00, 'e', 0x00,
-  'r', 0x00, 'f', 0x00, 'a', 0x00, 'c', 0x00, 'e', 0x00, 'G', 0x00, 'U', 0x00, 'I', 0x00, 'D', 0x00, 0x00, 0x00,
-
-  U16_TO_U8S_LE(0x004E), // wPropertyDataLength
-  //bPropertyData: "{807999C3-E4E0-40EA-8188-48E852B54F2B}\0"
-  '{', 0x00, '8', 0x00, '0', 0x00, '7', 0x00, '9', 0x00, '9', 0x00, '9', 0x00, 'C', 0x00, '3', 0x00, '-', 0x00,
-  'E', 0x00, '4', 0x00, 'E', 0x00, '0', 0x00, '-', 0x00, '4', 0x00, '0', 0x00, 'E', 0x00, 'A', 0x00, '-', 0x00,
-  '8', 0x00, '1', 0x00, '8', 0x00, '8', 0x00, '-', 0x00, '4', 0x00, '8', 0x00, 'E', 0x00, '8', 0x00, '5', 0x00,
-  '2', 0x00, 'B', 0x00, '5', 0x00, '4', 0x00, 'F', 0x00, '2', 0x00, 'B', 0x00, '}', 0x00, 0x00, 0x00
-};
-
-TU_VERIFY_STATIC(sizeof(desc_ms_os_20) == MS_OS_20_DESC_LEN, "Incorrect size");
-
-bool tud_vendor_control_xfer_cb(uint8_t rhport, uint8_t stage, tusb_control_request_t const * request)
-{
-  // nothing to with DATA & ACK stage
-  if (stage != CONTROL_STAGE_SETUP) return true;
-
-  switch (request->bmRequestType_bit.type)
-  {
-    case TUSB_REQ_TYPE_VENDOR:
-      switch (request->bRequest)
-      {
-        case VENDOR_REQUEST_MICROSOFT:
-          if ( request->wIndex == 7 )
-          {
-            // Get Microsoft OS 2.0 compatible descriptor
-            uint16_t total_len;
-            memcpy(&total_len, desc_ms_os_20+8, 2);
-
-            return tud_control_xfer(rhport, request, (void*)(uintptr_t) desc_ms_os_20, total_len);
-          }else
-          {
-            return false;
-          }
-
-        default:
-         break;
-      }
-    break;
-
-    default: 
-      break;
-  }
-
-  // stall unknown request
-  return false;
-}
-#endif /* (CFG_TUD_WINUSB_ENABLED == 1) */
-
 //--------------------------------------------------------------------+
 // String Descriptors
 //--------------------------------------------------------------------+
 
 // array of pointer to string descriptors
-char const* string_desc_arr [] =
-{
-  (const char[]) { 0x09, 0x04 }, // 0: is supported language is English (0x0409)
-  "OpenBLT User",                // 1: Manufacturer
-  "WinUSB Bulk Device",          // 2: Product
-  uniqueIdStr,                   // 3: Serials, use chip ID
+static char const *string_desc_arr[] = {
+  (const char[]) { 0x09, 0x04 },   // 0: is supported language is English (0x0409)
+  "Feaser https://www.feaser.com", // 1: Manufacturer
+  "USB Serial Device",             // 2: Product
+  uniqueIdStr,                     // 3: Serials, use chip ID
+  "Virtual COM Port",              // 4: CDC Interface
 };
 
-static uint16_t _desc_str[32];
+static uint16_t _desc_str[32 + 1];
 
 // Invoked when received GET STRING DESCRIPTOR request
 // Application return pointer to descriptor, whose contents must exist long enough for transfer to complete
