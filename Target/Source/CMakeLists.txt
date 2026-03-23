@@ -177,6 +177,47 @@ target_include_directories(openblt-usb-tinyusb INTERFACE
 
 
 #----------------------------------------------------------------------------------------
+#           O P E N B L T   A D D - O N   M O D U L E S
+#----------------------------------------------------------------------------------------
+# OpenBLT Improved Checksum add-on library target.
+# https://www.feaser.com/en/addons.php#checksum
+add_library(openblt-addon-checksum INTERFACE)
+
+target_sources(openblt-addon-checksum INTERFACE
+    "${CMAKE_CURRENT_LIST_DIR}/addons/csmod/checksum.c"
+    "${CMAKE_CURRENT_LIST_DIR}/addons/csmod/crc16.c"
+)
+
+target_include_directories(openblt-addon-checksum INTERFACE 
+    "${CMAKE_CURRENT_LIST_DIR}/addons/csmod"
+)
+
+# OpenBLT Firmware Encryption add-on library target.
+# https://www.feaser.com/en/addons.php#encryption
+add_library(openblt-addon-encryption INTERFACE)
+
+target_sources(openblt-addon-encryption INTERFACE
+    "${CMAKE_CURRENT_LIST_DIR}/addons/cryptomod/aes256.c"
+    "${CMAKE_CURRENT_LIST_DIR}/addons/cryptomod/crypto.c"
+)
+
+target_include_directories(openblt-addon-encryption INTERFACE 
+    "${CMAKE_CURRENT_LIST_DIR}/addons/cryptomod"
+)
+
+# OpenBLT Master/Slave Gateway add-on library target.
+# https://www.feaser.com/en/addons.php#gateway
+add_library(openblt-addon-gateway INTERFACE)
+
+target_sources(openblt-addon-gateway INTERFACE
+    "${CMAKE_CURRENT_LIST_DIR}/addons/gatewaymod/gateway.c"
+)
+
+target_include_directories(openblt-addon-gateway INTERFACE 
+    "${CMAKE_CURRENT_LIST_DIR}/addons/gatewaymod"
+)
+
+#----------------------------------------------------------------------------------------
 #           O P E N B L T   S T   S T M 3 2 C 0   P O R T
 #----------------------------------------------------------------------------------------
 # OpenBLT ST STM32C0 platform dependent library target.
